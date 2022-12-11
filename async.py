@@ -27,14 +27,14 @@ async def consumer():
     async with websockets.connect(url) as ws:
         await ws.send(subscriber)
         with open('ETH_BTC.csv', 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['id', 'symbol', 'sequence', 'ask_price', 'ask_size', 'bid_price', 'bid_size', 'time_coinapi', 'time_exchange', 'ts'])
             async for msg in ws:
                 if "Successfully subscribed!" in msg:
                     continue
                 data = json.loads(msg)
-                writer = csv.writer(file)
-                writer.writerow(['id', 'symbol', 'sequence', 'ask_price', 'ask_size', 'bid_price', 'bid_size', 'time_coinapi', 'time_exchange', 'ts'])
                 writer.writerow([data['id'], data['symbolId'], data['sequence'], data['askPrice'], data['askSize'], data['bidPrice'], data['bidSize'], data['timeCoinApi'], data['timeExchange'],])
-                print(">>> ", data)
+                # print(">>> ", data)
 
 
 if __name__ == "__main__":
